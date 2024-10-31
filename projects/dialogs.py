@@ -1,25 +1,25 @@
-from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QPushButton, QVBoxLayout, QDialog, QLineEdit, QLabel
+from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QPushButton, QVBoxLayout, QDialog, QLineEdit, QLabel, QHeaderView
 
 
 class AddTaskDialog(QDialog):
     def __init__(self, db, parent=None):
         super().__init__(parent)
         self.db = db
-        self.setWindowTitle("Add Task")
+        self.setWindowTitle("Новое задание")
 
         self.title_input = QLineEdit()
         self.user_id_input = QLineEdit()
         self.project_id_input = QLineEdit()
 
-        add_button = QPushButton("Add Task")
+        add_button = QPushButton("Добавить задание")
         add_button.clicked.connect(self.add_task)
 
         layout = QVBoxLayout()
-        layout.addWidget(QLabel("Title"))
+        layout.addWidget(QLabel("Название"))
         layout.addWidget(self.title_input)
-        layout.addWidget(QLabel("User ID"))
+        layout.addWidget(QLabel("ID работника"))
         layout.addWidget(self.user_id_input)
-        layout.addWidget(QLabel("Project ID"))
+        layout.addWidget(QLabel("ID проекта"))
         layout.addWidget(self.project_id_input)
         layout.addWidget(add_button)
 
@@ -29,7 +29,7 @@ class AddTaskDialog(QDialog):
         title = self.title_input.text()
         user_id = int(self.user_id_input.text())
         project_id = int(self.project_id_input.text())
-        self.db.create_task(title, 'Pending', user_id, project_id)
+        self.db.create_task(title, 'Не начат', user_id, project_id)
         self.accept()
 
 
@@ -37,15 +37,15 @@ class AddProjectDialog(QDialog):
     def __init__(self, db, parent=None):
         super().__init__(parent)
         self.db = db
-        self.setWindowTitle("Add Project")
+        self.setWindowTitle("Новый проект")
 
         self.project_name_input = QLineEdit()
 
-        add_button = QPushButton("Add Project")
+        add_button = QPushButton("Добавить проект")
         add_button.clicked.connect(self.add_project)
 
         layout = QVBoxLayout()
-        layout.addWidget(QLabel("Project Name"))
+        layout.addWidget(QLabel("Название проекта"))
         layout.addWidget(self.project_name_input)
         layout.addWidget(add_button)
 
@@ -62,13 +62,16 @@ class ViewProjectsDialog(QDialog):
     def __init__(self, db, parent=None):
         super().__init__(parent)
         self.db = db
-        self.setWindowTitle("Projects")
+        self.setWindowTitle("Проекты")
 
         self.table = QTableWidget()
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.table.verticalHeader().setVisible(False)
         self.table.setColumnCount(2)
-        self.table.setHorizontalHeaderLabels(["Project ID", "Project Name"])
+        self.table.setHorizontalHeaderLabels(["ID проекта", "Название проекта"])
 
-        self.add_project_button = QPushButton("Add Project")
+        self.add_project_button = QPushButton("Добавить проект")
         self.add_project_button.clicked.connect(self.open_add_project_dialog)
 
         layout = QVBoxLayout()
@@ -96,18 +99,18 @@ class AddUserDialog(QDialog):
     def __init__(self, db, parent=None):
         super().__init__(parent)
         self.db = db
-        self.setWindowTitle("Add User")
+        self.setWindowTitle("Новый пользователь")
 
         self.username_input = QLineEdit()
         self.email_input = QLineEdit()
 
-        add_button = QPushButton("Add User")
+        add_button = QPushButton("Добавить пользователя")
         add_button.clicked.connect(self.add_user)
 
         layout = QVBoxLayout()
-        layout.addWidget(QLabel("Username"))
+        layout.addWidget(QLabel("Имя"))
         layout.addWidget(self.username_input)
-        layout.addWidget(QLabel("Email"))
+        layout.addWidget(QLabel("Почта"))
         layout.addWidget(self.email_input)
         layout.addWidget(add_button)
 
@@ -125,13 +128,17 @@ class ViewUsersDialog(QDialog):
     def __init__(self, db, parent=None):
         super().__init__(parent)
         self.db = db
-        self.setWindowTitle("Users")
+        self.setWindowTitle("Работники")
 
         self.table = QTableWidget()
-        self.table.setColumnCount(3)
-        self.table.setHorizontalHeaderLabels(["User ID", "Username", "Email"])
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.table.verticalHeader().setVisible(False)
 
-        self.add_user_button = QPushButton("Add User")
+        self.table.setColumnCount(3)
+        self.table.setHorizontalHeaderLabels(["ID работника", "Имя", "Почта"])
+
+        self.add_user_button = QPushButton("Добавить пользователя")
         self.add_user_button.clicked.connect(self.open_add_user_dialog)
 
         layout = QVBoxLayout()
